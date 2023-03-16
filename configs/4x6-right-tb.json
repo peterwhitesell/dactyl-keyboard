@@ -52,6 +52,8 @@
     0
   ],
   "other_thumb": "DEFAULT",
+  "all_last_rows": false,
+  "shift_column": 1,
   "ball_side": "right",
   "trackball_modular": false,
   "trackball_Usize": 1.5,

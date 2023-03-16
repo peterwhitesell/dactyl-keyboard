@@ -26,3 +26,4 @@ config/
 **/*.iml
 
 /src/.ipynb_checkpoints/
+*.code-workspace
