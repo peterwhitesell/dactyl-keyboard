@@ -37,42 +37,49 @@ class MiniCluster(DefaultCluster):
     def thumborigin(self):
         # debugprint('thumborigin()')
         origin = super().thumborigin()
-        origin[2] = origin[2] - 4
+        origin[0] = origin[0] + 11
+        origin[1] = origin[1] + 2
+        origin[2] = origin[2] - 5
         return origin
 
+    def thumb_rotate(self):
+        x = y = 0
+        z = -5
+        return [x, y, z]
+
     def tl_place(self, shape):
-        shape = rotate(shape, [10, -23, 25])
-        shape = translate(shape, self.thumborigin())
-        shape = translate(shape, [-35, -16, -2])
+        shape = rotate(shape, [10, -23, 28])
+        shape = self.thumb_place(shape)
+        shape = translate(shape, [-35, -16, -1])
         return shape
 
     def tr_place(self, shape):
-        shape = rotate(shape, [14, -15, 10])
-        shape = translate(shape, self.thumborigin())
-        shape = translate(shape, [-15, -10, 5])
+        shape = rotate(shape, [15, -50, 15])
+        shape = self.thumb_place(shape)
+        shape = translate(shape, [-14, -10, 14])
         return shape
 
-    def mr_place(self, shape):
-        shape = rotate(shape, [10, -23, 25])
-        shape = translate(shape, self.thumborigin())
-        shape = translate(shape, [-23, -34, -6])
+    def mr_place(self, shape): # bl
+        shape = rotate(shape, [10, -23, 32])
+        shape = self.thumb_place(shape)
+        shape = translate(shape, [-25, -34, -1])
         return shape
 
-    def br_place(self, shape):
-        shape = rotate(shape, [6, -34, 35])
-        shape = translate(shape, self.thumborigin())
-        shape = translate(shape, [-39, -43, -16])
+    def br_place(self, shape): # br
+        shape = rotate(shape, [6, -4, 35])
+        shape = self.thumb_place(shape)
+        shape = translate(shape, [-46, -45, -6])
         return shape
 
     def bl_place(self, shape):
-        shape = rotate(shape, [6, -32, 35])
-        shape = translate(shape, self.thumborigin())
-        shape = translate(shape, [-51, -25, -11.5])
+        shape = rotate(shape, [6, -2, 35])
+        shape = self.thumb_place(shape)
+        shape = translate(shape, [-58, -27, -6.5])
         return shape
 
     def fl_place(self, shape):
         shape = rotate(shape, [0, -32, 40])
-        shape = translate(shape, self.thumborigin())
+        shape = self.thumb_place(shape)
         shape = translate(shape, [-25, -45, -15.5])
         return shape
 
@@ -211,17 +218,27 @@ class MiniCluster(DefaultCluster):
                     self.tr_place(self.thumb_post_tr()),
                     cluster_key_place(web_post_br(), 1, cornerrow),
                     cluster_key_place(web_post_tl(), 2, lastrow),
-                    cluster_key_place(web_post_bl(), 2, lastrow),
                     self.tr_place(self.thumb_post_tr()),
+                    translate(self.tr_place(self.thumb_post_tr()), (10, 4, 0)),
+                    cluster_key_place(web_post_tl(), 2, lastrow),
                     cluster_key_place(web_post_bl(), 2, lastrow),
+                    translate(self.tr_place(self.thumb_post_tr()), (10, 4, 0)),
+                    translate(self.tr_place(self.thumb_post_br()), (4, 0, 0)),
+                    translate(self.tr_place(self.thumb_post_tr()), (10, 4, 0)),
+                    self.tr_place(self.thumb_post_tr()),
                     self.tr_place(self.thumb_post_br()),
+                    translate(self.tr_place(self.thumb_post_br()), (4, 0, 0)),
+                    cluster_key_place(web_post_bl(), 2, lastrow),
                     cluster_key_place(web_post_br(), 2, lastrow),
                     cluster_key_place(web_post_bl(), 3, lastrow),
-                    cluster_key_place(web_post_tr(), 2, lastrow),
-                    cluster_key_place(web_post_tl(), 3, lastrow),
-                    cluster_key_place(web_post_bl(), 3, cornerrow),
-                    cluster_key_place(web_post_tr(), 3, lastrow),
-                    cluster_key_place(web_post_br(), 3, cornerrow),
+                    translate(self.tr_place(self.thumb_post_br()), (4, 0, 0)),
+                    self.tr_place(self.thumb_post_br()),
+                    cluster_key_place(web_post_bl(), 3, lastrow),
+                    # cluster_key_place(web_post_tr(), 2, lastrow),
+                    # cluster_key_place(web_post_tl(), 3, lastrow),
+                    # cluster_key_place(web_post_bl(), 3, cornerrow),
+                    # cluster_key_place(web_post_tr(), 3, lastrow),
+                    # cluster_key_place(web_post_br(), 3, cornerrow),
                 ]
             )
         )
@@ -262,7 +279,11 @@ class MiniCluster(DefaultCluster):
     def walls(self, side="right"):
         print('thumb_walls()')
         # thumb, walls
-        shape = union([wall_brace(self.mr_place, 0, -1, web_post_br(), self.tr_place, 0, -1, self.thumb_post_br())])
+        shape = union([])
+        shape = union([wall_brace(
+            self.mr_place, 0, -1, web_post_br(),
+            self.tr_place, 0, -1, self.thumb_post_br()
+        )])
         shape = union([shape, wall_brace(self.mr_place, 0, -1, web_post_br(), self.mr_place, 0, -1, web_post_bl())])
         shape = union([shape, wall_brace(self.br_place, 0, -1, web_post_br(), self.br_place, 0, -1, web_post_bl())])
         shape = union([shape, wall_brace(self.bl_place, 0, 1, web_post_tr(), self.bl_place, 0, 1, web_post_tl())])
@@ -281,7 +302,6 @@ class MiniCluster(DefaultCluster):
 
     def connection(self, side='right'):
         print('thumb_connection()')
-        # clunky bit on the top left thumb connection  (normal connectors don't work well)
         # clunky bit on the top left thumb connection  (normal connectors don't work well)
         shape = union([bottom_hull(
             [
